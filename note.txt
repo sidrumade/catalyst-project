@@ -1,0 +1,1 @@
+celery -A catalyst_count worker -l info --pool=solo

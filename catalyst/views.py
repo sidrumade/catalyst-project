@@ -1,15 +1,23 @@
 from django.shortcuts import render,redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
-from .models import Company
+
 
 from django.core.exceptions import ValidationError
 
 
 from django.core.files.storage import FileSystemStorage
+
 import pdb
-import pandas as pd
+
+from .tasks import process_file_upload
+
+from .models import UploadLog
+
+from django.http import JsonResponse
+
+
+
 # Create your views here.
 
 
@@ -40,71 +48,73 @@ def login_view(request):
 
 
 
-def clean_data(df):
-    df['industry'] = df['industry'].fillna('not available').astype(str)
-    df['locality'] = df['locality'].fillna('not available').astype(str)
-    df['country'] = df['country'].fillna('not available').astype(str)
-    df['linkedin url'] = df['linkedin url'].fillna('not available').astype(str)
-    df['domain'] = df['domain'].fillna('not available').astype(str)
-    df['name'] = df['name'].fillna('not available').astype(str)
-    df['year founded'] = df['year founded'].fillna(0).astype(int)
-    if df['domain'].dtype == object :
-        df['size range'] = df['size range'].apply(lambda a: a.replace('+',''))
-    df['size range'] = df['size range'].fillna('not available').astype(str)
-    df['current employee estimate'] = df['current employee estimate'].fillna(0).astype(int)
-    df['total employee estimate'] = df['total employee estimate'].fillna(0).astype(int)
-    return df
-
-
 def upload_csv(request):
   """Handles the upload of a CSV file and inserts it into the database."""
-
+  username = None
+  if request.user.is_authenticated:
+        username = request.user.username
+        
+        
   if request.method == 'POST':
     file = request.FILES['datafile']
     
     if not file:
         raise ValidationError("No file selected")
+    
+    # Specify the temporary folder path
+    temp_folder = 'temp_uploads/'
+
 
     # Save the file to the filesystem
-    fs = FileSystemStorage()
+    fs = FileSystemStorage(location=temp_folder)
     filename = fs.save(file.name, file)
-    
     
     if not filename.endswith('.csv'):
         raise ValidationError("Invalid file format. Please upload a CSV file.")
-
-
-    # Read the CSV file and insert the data into the database
-    chunk_size = 500000  # Number of rows per chunk
-    with open(fs.path(filename), 'r') as csvfile:
-        for chunk in pd.read_csv(csvfile, chunksize=chunk_size):
-            companies_to_insert = []
-            print('processing chunk===================')
-            chunk = clean_data(chunk)
-            for index, row in chunk.iterrows():
-                company = Company(
-                    name=row['name'],
-                    domain=row['domain'],
-                    year_founded=row['year founded'],
-                    industry=row['industry'],
-                    size_range=row['size range'],
-                    locality=row['locality'],
-                    country=row['country'],
-                    linkedin_url=row['linkedin url'],
-                    current_employee_estimate=row['current employee estimate'],
-                    total_employee_estimate=row['total employee estimate']
-                )
-                companies_to_insert.append(company)
-            # Insert the companies in bulk
-            Company.objects.bulk_create(companies_to_insert)
-
+    
+    
+    if username:
+        recept = process_file_upload.delay(temp_folder,filename,username)
         
-        
-        
-        
-
-
+    print('redirecting====================')
     return redirect('catalyst:home')
-
   else:
     return render(request, 'account/base.html')
+
+
+
+
+
+def get_log_status(request):
+    username = None
+    if request.user.is_authenticated:
+        username = request.user.username
+        
+        
+    logs = UploadLog.objects.filter(user=username)
+    
+    logs_data = []
+    for log in logs:
+        logs_data.append({
+            'id': log.id,
+            'user': log.user,
+            'file_name': log.file_name,
+            'start_time' : log.start_time,
+            'end_time': log.end_time ,
+            'total_rows': log.total_rows,
+            'process_rows': log.process_rows,
+            'status' : log.status
+        })
+    
+    return JsonResponse(logs_data, safe=False)
+
+        
+    
+
+
+
+
+
+
+
+

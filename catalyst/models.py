@@ -1,4 +1,7 @@
 from django.db import models
+import datetime
+
+from django.utils import timezone
 
 # Create your models here.
 
@@ -22,4 +25,16 @@ class Company(models.Model):
     
     def __str__(self):
         return self.name
+    
+    
+    
+class UploadLog(models.Model):
+    user = models.CharField(max_length=250,null=False)
+    file_name = models.CharField(max_length=250,null=False)
+    start_time = models.DateTimeField(default=timezone.now)
+    end_time = models.DateTimeField(default=timezone.now)
+    total_rows = models.IntegerField(null=False)
+    process_rows = models.IntegerField(null=False)
+    status = models.CharField(max_length=50,default='In Progress')
+    
     

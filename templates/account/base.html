@@ -40,6 +40,7 @@
 
     <div id="uploadDataDiv" style="display: block;"> 
 
+      <div class="mb-3">
       <form method="post" enctype="multipart/form-data" id="upload-form" action="{% url 'catalyst:upload' %}">
         {% csrf_token %}
 
@@ -54,13 +55,35 @@
           </div>
         </div>
 
-        
-        
-
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
+    </div>
+
+      <div class="mb-3">
+        <table class="table" id = "logsTable">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">user</th>
+              <th scope="col">file_name</th>
+              <th scope="col">total_rows</th>
+              <th scope="col">process_rows</th>
+              <th scope="col">status</th>
+              <th scope="col">start_time</th>
+              <th scope="col">end_time</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+          </tbody>
+        </table>
+      </div>
 
     </div>
+
+    
+
+
 
 
     <div id="queryBuilderDiv" style="display: none;">  Content for Query Builder div </div>
@@ -124,6 +147,48 @@
   });
 
 });
+
+
+function populateTable(data) {
+  var tableBody = $('#logsTable tbody');
+
+  tableBody.empty();
+  
+  $.each(data, function(index, log) {
+      var row = $('<tr>');
+      row.append($('<th scope="row">').text(log.id));
+      row.append($('<td>').text(log.user));
+      row.append($('<td>').text(log.file_name));
+      row.append($('<td>').text(log.total_rows));
+      row.append($('<td>').text(log.process_rows));
+      row.append($('<td>').text(log.status));
+      row.append($('<td>').text(log.start_time));
+      row.append($('<td>').text(log.end_time));
+      
+      tableBody.append(row);
+  });
+}
+
+
+setTimeout( function(){}, )
+
+function fetchDataAndPopulateTable() {
+  $.ajax({
+    url: '/logs/json/',
+    type: 'GET',
+    success: function(data) {
+      // Process the data received
+      console.log(data);
+      populateTable(data);
+    },
+    error: function(error) {
+      console.error(error);
+    }
+  });
+}
+
+setInterval(fetchDataAndPopulateTable, 5000);
+
     </script>
   </body>
 </html>
