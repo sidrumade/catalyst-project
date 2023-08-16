@@ -12,9 +12,11 @@ import pdb
 
 from .tasks import process_file_upload
 
-from .models import UploadLog
+from .models import UploadLog , Company
 
 from django.http import JsonResponse
+
+from .forms import CompanyModelForm
 
 
 
@@ -110,6 +112,23 @@ def get_log_status(request):
 
         
     
+
+def search_records(request):
+    if request.method == 'POST':
+        form = CompanyModelForm(request.POST)
+        if form.is_valid():
+            selected_data = form.cleaned_data
+            counts = Company.objects.filter(
+                industry=selected_data['industry'],
+                size_range=selected_data['size_range'],
+                locality=selected_data['locality'],
+                country=selected_data['country']
+            ).count()
+            return render(request, 'account/query_builder.html', {'counts': counts , 'form':form})
+    else:
+        form = CompanyModelForm()
+        
+    return render(request, 'account/query_builder.html', {'form': form})
 
 
 

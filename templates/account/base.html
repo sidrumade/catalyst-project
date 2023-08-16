@@ -19,10 +19,10 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#" onclick="toggleDiv('uploadDataDiv', 'queryBuilderDiv')" >Upload Data</a>
+              <a class="nav-link active" aria-current="page" href="{% url 'catalyst:home' %}"  >Upload Data</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" onclick="toggleDiv('queryBuilderDiv', 'uploadDataDiv')" >Query Builder</a>
+              <a class="nav-link" href="{% url 'catalyst:search_records' %}"  >Query Builder</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Users</a>
@@ -59,46 +59,37 @@
       </form>
     </div>
 
-      <div class="mb-3">
-        <table class="table" id = "logsTable">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">user</th>
-              <th scope="col">file_name</th>
-              <th scope="col">total_rows</th>
-              <th scope="col">process_rows</th>
-              <th scope="col">status</th>
-              <th scope="col">start_time</th>
-              <th scope="col">end_time</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-          </tbody>
-        </table>
-      </div>
+    <div class="mb-3">
+      <table class="table" id = "logsTable">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">user</th>
+            <th scope="col">file_name</th>
+            <th scope="col">total_rows</th>
+            <th scope="col">process_rows</th>
+            <th scope="col">status</th>
+            <th scope="col">start_time</th>
+            <th scope="col">end_time</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        </tbody>
+      </table>
+    </div>
+
+
 
     </div>
 
     
-
-
-
-
-    <div id="queryBuilderDiv" style="display: none;">  Content for Query Builder div </div>
     
-
 
     {% endblock %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-      function toggleDiv(divToShowId, divToHideId) {
-         $("#" + divToShowId).show();
-         $("#" + divToHideId).hide();
-      }
-   </script>
+    
 
    <script>
     $(document).ready(function() {
