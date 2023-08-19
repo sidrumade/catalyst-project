@@ -1,5 +1,12 @@
 {% extends "account/base.html" %}
 {% block content %}
+<style>
+  #form_div{
+    width: 90%;
+    margin: auto;
+  }
+
+</style>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">Catalyst Media</a>
@@ -29,12 +36,50 @@
   </nav>
 
 
-  <form id="search-form">
+  {% comment %} <form id="search-form">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Search Records</button>
+</form> {% endcomment %}
+
+<div id="result-count" class="alert alert-primary" role="alert" style="display:none;">
+  <div style="display:flex;">
+    Result Count: &bsp;<p id="count"></p>
+    <button id="close-button" style="margin-left:auto;">X</button>
+  </div>
+
+
+</div>
+
+<div id="form_div">
+<form id="search-form" >
+  <div class="mb-3">
+    <label for="id_name" class="form-label">Keyword</label>
+    {{ form.name }}    
+  </div>
+  <div class="mb-3">
+    <label for="id_industry" class="form-label">Industry</label>
+    {{ form.industry }}    
+  </div>
+  <div class="mb-3">
+    <label for="id_size_range" class="form-label">Size Range</label>
+    {{ form.size_range }}  
+  </div>
+  <div class="mb-3">
+    <label for="id_locality" class="form-label">Loocality</label>
+    {{ form.locality }}
+  </div>
+
+  <div class="mb-3">
+    <label for="id_country" class="form-label">Loocality</label>
+    {{ form.country }}
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
 </form>
-<p id="result-count">Result Count: <span id="count"></span></p>
+</div>
+
+
 
 
 {%endblock%}
@@ -45,11 +90,8 @@
     $("#search-form").on("submit", function(e) {
         e.preventDefault();
         const formData = $(this).serialize();
-        {% comment %} const encodedData = formData.replace(/([^=&]+)=([^&]*)/g, (_, key, value) => {
-          return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-      });
+        
 
-      console.log('formData==',encodedData); {% endcomment %}
 
         $.ajax({
             type: "GET",
@@ -57,12 +99,23 @@
             data: formData,
             success: function(response) {
                 $("#count").text(response.count);
+                $('#result-count').show();
             },
             error: function(error) {
                 console.error("Error fetching data:", error);
             }
         });
     });
+});
+
+function hide_result(){
+  $('#result-count').hide()
+}
+
+
+// Add click event listener to the close button
+$("#close-button").on("click", function() {
+  $('#result-count').hide();  // Hide the result-count element
 });
 </script>
 

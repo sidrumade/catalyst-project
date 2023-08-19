@@ -7,6 +7,7 @@ from .models import Company
     
 class CompanyModelForm(forms.ModelForm):
     
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
@@ -14,6 +15,14 @@ class CompanyModelForm(forms.ModelForm):
         self.fields['size_range'] = forms.ChoiceField(choices=self.get_size_range_choices())
         self.fields['locality'] = forms.ChoiceField(choices=self.get_locality_choices())
         self.fields['country'] = forms.ChoiceField(choices=self.get_country_choices())
+        
+        self.fields['name'].widget.attrs['class'] = 'form-control'
+        self.fields['industry'].widget.attrs['class'] = 'form-select'
+        self.fields['size_range'].widget.attrs['class'] = 'form-select'
+        self.fields['locality'].widget.attrs['class'] = 'form-select'
+        self.fields['country'].widget.attrs['class'] = 'form-select'
+        
+        
         
     def get_industry_choices(self):
         return [(industry, industry) for industry in Company.objects.values_list('industry', flat=True).distinct().filter(industry__startswith = 'information')]
@@ -30,6 +39,6 @@ class CompanyModelForm(forms.ModelForm):
     
     class Meta:
         model = Company
-        fields = ["industry","size_range" , "locality" , "country"]
+        fields = ["industry","size_range" , "locality" , "country","name"]
         
 

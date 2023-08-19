@@ -186,7 +186,22 @@ class CompanyCountAPIView(APIView):
         print("Serialized data:", serializer.data)
 
         filters = serializer.validated_data
-        count = Company.objects.filter(**filters).count()
-
+        
+        print("filters ==",filters)
+        
+        company_name_filter = filters.pop('name', None)  # Remove this filter from the filters dictionary
+        
+        
+        print('company_name_filter===',company_name_filter)
+        
+        queryset = Company.objects.filter(**filters)
+        
+        
+        if company_name_filter:
+            queryset = queryset.filter(name__contains=company_name_filter)
+        
+        
+        count = queryset.count()
+        
         return Response({'count': count})
 

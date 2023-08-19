@@ -4,11 +4,13 @@ from .models import Company
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = ["industry", "size_range", "locality", "country"]
+        fields = ["name","industry", "size_range", "locality", "country"]
 
 
 class CompanyCountSerializer(serializers.Serializer):
-    industry = serializers.CharField()
-    size_range = serializers.CharField()
-    locality = serializers.CharField()
-    country = serializers.CharField()
+    
+    industry = serializers.CharField(required=False)
+    size_range = serializers.CharField(required=False)
+    locality = serializers.CharField(required=False)
+    country = serializers.CharField(required=False)
+    name = serializers.CharField(required=False)  # Add this field
