@@ -1,7 +1,13 @@
-from django.urls import path
+from django.urls import path , include
 from django.views.decorators.http import require_POST
 
-from .views import UserProfileView , BaseView , upload_csv , get_log_status , search_records # Replace with your actual view
+from .views import UserProfileView , BaseView , upload_csv , get_log_status , search_records  , count_companies # Replace with your actual view
+
+from rest_framework.routers import DefaultRouter
+from .views import CompanyViewSet,CompanyCountAPIView
+
+router = DefaultRouter()
+router.register(r'companies', CompanyViewSet, basename='company')
 
 app_name = 'catalyst'
 
@@ -11,7 +17,7 @@ urlpatterns = [
     path('accounts/login/user/profile', UserProfileView.as_view(), name='user_profile'),
     path('logs/json/', get_log_status , name='logs-json'),
     path('search/', search_records, name='search_records'),
-
-
-
+    path('api/companies/count/', CompanyCountAPIView.as_view(), name='count-companies'),
+    path('rest-api/', include(router.urls)),
+    # path('api/companies/count/', count_companies, name='count-companies'),
 ]

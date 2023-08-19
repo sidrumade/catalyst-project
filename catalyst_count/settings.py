@@ -39,8 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'allauth',
     'allauth.account',
-    'allauth.socialaccount',  # Make sure this is present
+    'allauth.socialaccount',
+    'rest_framework',
     'catalyst',
+    
 ]
 
 MIDDLEWARE = [

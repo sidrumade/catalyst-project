@@ -19,6 +19,16 @@ from django.http import JsonResponse
 from .forms import CompanyModelForm
 
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import CompanySerializer,CompanyCountSerializer
+
+from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.views import APIView
+
+
+
 
 # Create your views here.
 
@@ -114,26 +124,69 @@ def get_log_status(request):
     
 
 def search_records(request):
-    if request.method == 'POST':
-        form = CompanyModelForm(request.POST)
-        if form.is_valid():
-            selected_data = form.cleaned_data
-            counts = Company.objects.filter(
-                industry=selected_data['industry'],
-                size_range=selected_data['size_range'],
-                locality=selected_data['locality'],
-                country=selected_data['country']
-            ).count()
-            return render(request, 'account/query_builder.html', {'counts': counts , 'form':form})
-    else:
-        form = CompanyModelForm()
-        
+    form = CompanyModelForm()
     return render(request, 'account/query_builder.html', {'form': form})
 
 
+@api_view(['GET'])
+def count_companies(request):
+    industry = request.GET.get('industry')
+    size_range = request.GET.get('size_range')
+    locality = request.GET.get('locality')
+    country = request.GET.get('country')
+
+    count = Company.objects.filter(
+        industry=industry,
+        size_range=size_range,
+        locality=locality,
+        country=country
+    ).count()
+    
+    print('count================',count)
+
+    return Response({'count': count})
 
 
 
 
+class CompanyViewSet(viewsets.ModelViewSet):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
 
+    @action(detail=False, methods=['get'])
+    def industry_choices(self, request):
+        industries = Company.objects.values_list('industry', flat=True).distinct()
+        return Response(industries)
+
+    @action(detail=False, methods=['get'])
+    def size_range_choices(self, request):
+        size_ranges = Company.objects.values_list('size_range', flat=True).distinct()
+        return Response(size_ranges)
+
+    @action(detail=False, methods=['get'])
+    def locality_choices(self, request):
+        localities = Company.objects.values_list('locality', flat=True).distinct()
+        return Response(localities)
+
+    @action(detail=False, methods=['get'])
+    def country_choices(self, request):
+        countries = Company.objects.values_list('country', flat=True)
+        return Response(countries)
+
+class CompanyCountAPIView(APIView):
+    serializer_class = CompanyCountSerializer
+
+    def get(self, request, format=None):
+        serializer = self.serializer_class(data=request.GET)
+        # pdb.set_trace()
+        print('******************************ccccccccc',)
+        
+        serializer.is_valid(raise_exception=True)
+        
+        print("Serialized data:", serializer.data)
+
+        filters = serializer.validated_data
+        count = Company.objects.filter(**filters).count()
+
+        return Response({'count': count})
 
