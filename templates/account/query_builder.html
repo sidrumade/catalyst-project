@@ -37,15 +37,9 @@
   </nav>
 
 
-  {% comment %} <form id="search-form">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Search Records</button>
-</form> {% endcomment %}
-
 <div id="result-count" class="alert alert-primary" role="alert" style="display:none;">
   <div style="display:flex;">
-    Result Count: &nbsp; <p id="count"></p>
+    Result Count: &nbsp; <p id="count"></p> &nbsp; Records found for the query.
     <button id="close-button" style="margin-left:auto;width: 2em;">X</button>
   </div>
 
