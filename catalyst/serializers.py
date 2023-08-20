@@ -14,10 +14,12 @@ class CompanySerializer(serializers.ModelSerializer):
 class CompanyCountSerializer(serializers.Serializer):
     
     industry = serializers.CharField(required=False)
-    size_range = serializers.CharField(required=False)
     locality = serializers.CharField(required=False)
     country = serializers.CharField(required=False)
-    name = serializers.CharField(required=False)  # Add this field
+    name = serializers.CharField(required=False)  
+    employee_from = serializers.IntegerField(required=False) 
+    employee_to = serializers.IntegerField(required=False) 
+    
 
 
 

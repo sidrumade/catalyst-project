@@ -174,23 +174,23 @@ def search_records(request):
     return render(request, 'account/query_builder.html', {'form': form})
 
 
-@api_view(['GET'])
-def count_companies(request):
-    industry = request.GET.get('industry')
-    size_range = request.GET.get('size_range')
-    locality = request.GET.get('locality')
-    country = request.GET.get('country')
+# @api_view(['GET'])
+# def count_companies(request):
+#     industry = request.GET.get('industry')
+#     size_range = request.GET.get('size_range')
+#     locality = request.GET.get('locality')
+#     country = request.GET.get('country')
 
-    count = Company.objects.filter(
-        industry=industry,
-        size_range=size_range,
-        locality=locality,
-        country=country
-    ).count()
+#     count = Company.objects.filter(
+#         industry=industry,
+#         size_range=size_range,
+#         locality=locality,
+#         country=country
+#     ).count()
     
-    print('count================',count)
+#     print('count================',count)
 
-    return Response({'count': count})
+#     return Response({'count': count})
 
 
 
@@ -225,20 +225,18 @@ class CompanyCountAPIView(APIView):
     def get(self, request, format=None):
         serializer = self.serializer_class(data=request.GET)
         # pdb.set_trace()
-        print('******************************ccccccccc',)
         
         serializer.is_valid(raise_exception=True)
         
-        print("Serialized data:", serializer.data)
 
         filters = serializer.validated_data
         
-        print("filters ==",filters)
         
         company_name_filter = filters.pop('name', None)  # Remove this filter from the filters dictionary
+        employee_from_filter = filters.pop('employee_from', None) 
+        employee_to_filter = filters.pop('employee_to', None) 
+
         
-        
-        print('company_name_filter===',company_name_filter)
         
         queryset = Company.objects.filter(**filters)
         
@@ -246,7 +244,9 @@ class CompanyCountAPIView(APIView):
         if company_name_filter:
             queryset = queryset.filter(name__contains=company_name_filter)
         
-        
+        if employee_to_filter and employee_from_filter:
+            queryset = queryset.filter(total_employee_estimate__gte=employee_from_filter, total_employee_estimate__lte=employee_to_filter)
+
         count = queryset.count()
         
         return Response({'count': count})

@@ -2,8 +2,9 @@
 {% block content %}
 <style>
   #form_div{
-    width: 90%;
+    width: 80%;
     margin: auto;
+    margin-top:1%;
   }
 
 </style>
@@ -61,10 +62,7 @@
     <label for="id_industry" class="form-label">Industry</label>
     {{ form.industry }}    
   </div>
-  <div class="mb-3">
-    <label for="id_size_range" class="form-label">Size Range</label>
-    {{ form.size_range }}  
-  </div>
+  
   <div class="mb-3">
     <label for="id_locality" class="form-label">Loocality</label>
     {{ form.locality }}
@@ -73,6 +71,14 @@
   <div class="mb-3">
     <label for="id_country" class="form-label">Country</label>
     {{ form.country }}
+  </div>
+  <div class="mb-3">
+    <label for="id_employee_from" class="form-label">Employee From</label>
+    {{ form.employee_from }}
+  </div>
+  <div class="mb-3">
+    <label for="id_employee_to" class="form-label">Employee To</label>
+    {{ form.employee_to }}
   </div>
 
   <button type="submit" class="btn btn-primary">Submit</button>
