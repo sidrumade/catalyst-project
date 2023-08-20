@@ -122,13 +122,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 AUTHENTICATION_BACKENDS = [
-    'allauth.account.auth_backends.AuthenticationBackend',
+    env('AUTHENTICATION_BACKENDS'),
 ]
 
 LOGIN_REDIRECT_URL = 'catalyst:home'  # Replace with your profile view's URL name
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = env('EMAIL_BACKEND')
 ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_SIGNUP_REDIRECT_URL = 'catalyst:home'
 
