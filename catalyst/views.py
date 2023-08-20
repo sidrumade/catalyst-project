@@ -1,54 +1,27 @@
 from django.shortcuts import render,redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-
-
 from django.core.exceptions import ValidationError
-
-
 from django.core.files.storage import FileSystemStorage
-
-import pdb
-
-
-from allauth.account.views import SignupView
-
 from .tasks import process_file_upload
 from django.shortcuts import redirect, get_object_or_404
-
 from .models import UploadLog , Company
 from django.http import JsonResponse
 from .forms import CompanyModelForm
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import CompanySerializer,CompanyCountSerializer,UserListSerializer
+from .serializers import CompanySerializer,CompanyCountSerializer
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from django.views.generic import ListView
 from rest_framework.response import Response
-from rest_framework import status
-from allauth.account.models import EmailAddress
+from .forms import CustomUserCreationForm
 
 
 # Create your views here.
 
 
-
-# class UserProfileView(LoginRequiredMixin):
-#     template_name = 'account/user_profile.html'  # Path to your profile template
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         user = self.request.user
-#         context['user'] = user
-#         return context
-
-
-
-
-from .forms import CustomUserCreationForm
 
 def add_user(request):
     if request.method == 'POST':
@@ -134,7 +107,6 @@ def upload_csv(request):
     if username:
         recept = process_file_upload.delay(temp_folder,filename,username)
         
-    print('redirecting====================')
     return redirect('catalyst:home')
   else:
     return render(request, 'account/base.html')
@@ -172,25 +144,6 @@ def get_log_status(request):
 def search_records(request):
     form = CompanyModelForm()
     return render(request, 'account/query_builder.html', {'form': form})
-
-
-# @api_view(['GET'])
-# def count_companies(request):
-#     industry = request.GET.get('industry')
-#     size_range = request.GET.get('size_range')
-#     locality = request.GET.get('locality')
-#     country = request.GET.get('country')
-
-#     count = Company.objects.filter(
-#         industry=industry,
-#         size_range=size_range,
-#         locality=locality,
-#         country=country
-#     ).count()
-    
-#     print('count================',count)
-
-#     return Response({'count': count})
 
 
 
@@ -250,60 +203,3 @@ class CompanyCountAPIView(APIView):
         count = queryset.count()
         
         return Response({'count': count})
-
-
-
-
-# class UserListView(APIView):
-#     def get(self, request):
-#         users = EmailAddress.objects.all()
-#         serializer = UserListSerializer(users, many=True)
-#         return Response(serializer.data)
-    
-        
-# class UserDetailView(APIView):
-#     def get(self, request, user_id):
-#         try:
-#             user = EmailAddress.objects.get(id=user_id)
-#             serializer = UserListSerializer(user)
-#             return Response(serializer.data)
-#         except EmailAddress.DoesNotExist:
-#             return Response(status=status.HTTP_404_NOT_FOUND)
-            
-#     def delete(self, request, user_id):
-#         try:
-#             user = EmailAddress.objects.get(id=user_id)
-#             user.delete()
-#             return Response(status=status.HTTP_204_NO_CONTENT)
-#         except EmailAddress.DoesNotExist:
-#             return Response(status=status.HTTP_404_NOT_FOUND)
-
-
-
-
-# from rest_framework.views import APIView
-# from rest_framework.response import Response
-# from rest_framework import status
-# from rest_framework.authentication import TokenAuthentication
-# from rest_framework.permissions import IsAuthenticated
-# from allauth.account.models import EmailAddress
-# from .serializers import UserProfileSerializer  # Import the serializer
-
-
-
-# class UserProfileView(APIView):
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request):
-#         user = request.user
-#         serializer = UserProfileSerializer(user)  # Serialize the user profile data
-#         return Response(serializer.data)  # Return a Response instance
-
-#     def put(self, request):
-#         user = request.user
-#         serializer = UserProfileSerializer(user, data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)  # Return a Response instance
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # Return a Response instance
