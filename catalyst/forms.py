@@ -1,7 +1,6 @@
 from django import forms
 from .models import Company
-
-
+from allauth.account.forms import SignupForm
     
     
     
@@ -42,3 +41,18 @@ class CompanyModelForm(forms.ModelForm):
         fields = ["industry","size_range" , "locality" , "country","name"]
         
 
+
+
+
+
+
+class CustomUserCreationForm(SignupForm):
+    # Add any additional fields you want for user creation
+    # For example:
+    # phone_number = forms.CharField(max_length=15)
+
+    def save(self, request):
+        # Override the save method to create the user
+        user = super().save(request)
+        # Perform any additional actions if needed
+        return user

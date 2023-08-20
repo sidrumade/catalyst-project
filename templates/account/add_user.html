@@ -1,0 +1,68 @@
+{% extends 'account/base.html' %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Catalyst Media</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'catalyst:home' %}" >Upload Data</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'catalyst:search_records' %}" aria-current="page">Query Builder</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'catalyst:list-user' %}" >Users</a>
+          </li>
+          {% if user %}
+          <li>
+            <a class="nav-link" href="{% url 'account_logout' %}"> Logout </a>
+          </li>
+           {% endif %}
+        </ul> 
+        
+      </div>
+    </div>
+  </nav>
+
+
+
+  <div class="container">
+    <h4>Add New User</h4>
+    <form method="post" >
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        {{ form.username }}
+        {{ form.username.errors }}
+
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">E-mail address</label>
+        {{ form.email }}
+        {{ form.email.errors }}
+      </div>
+      <div class="mb-3">
+        <label for="password1" class="form-label">Password</label>
+        {{ form.password1 }}
+        {{ form.password1.errors }}
+      </div>
+      <div class="mb-3">
+        <label for="paspassword2sword" class="form-label">Password (again)</label>
+        {{ form.password2 }}
+        {{ form.password2.errors }}
+      </div>
+      <button type="submit" class="btn btn-primary">Add</button>
+
+    </form>
+  </div>
+
+
+
+{% endblock %}

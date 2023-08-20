@@ -22,7 +22,7 @@
             <a class="nav-link active" href="{% url 'catalyst:search_records' %}" aria-current="page">Query Builder</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Users</a>
+            <a class="nav-link" href="{% url 'catalyst:list-user' %}" >Users</a>
           </li>
           {% if user %}
           <li>
@@ -44,8 +44,8 @@
 
 <div id="result-count" class="alert alert-primary" role="alert" style="display:none;">
   <div style="display:flex;">
-    Result Count: &bsp;<p id="count"></p>
-    <button id="close-button" style="margin-left:auto;">X</button>
+    Result Count: &nbsp; <p id="count"></p>
+    <button id="close-button" style="margin-left:auto;width: 2em;">X</button>
   </div>
 
 

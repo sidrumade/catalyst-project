@@ -10,31 +10,76 @@ from django.core.files.storage import FileSystemStorage
 
 import pdb
 
+
+from allauth.account.views import SignupView
+
 from .tasks import process_file_upload
+from django.shortcuts import redirect, get_object_or_404
 
 from .models import UploadLog , Company
-
 from django.http import JsonResponse
-
 from .forms import CompanyModelForm
-
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import CompanySerializer,CompanyCountSerializer
-
+from .serializers import CompanySerializer,CompanyCountSerializer,UserListSerializer
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.views import APIView
-
-
+from django.contrib.auth.models import User
+from django.views.generic import ListView
+from rest_framework.response import Response
+from rest_framework import status
+from allauth.account.models import EmailAddress
 
 
 # Create your views here.
 
 
 
-class UserProfileView(LoginRequiredMixin, TemplateView):
+# class UserProfileView(LoginRequiredMixin):
+#     template_name = 'account/user_profile.html'  # Path to your profile template
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         user = self.request.user
+#         context['user'] = user
+#         return context
+
+
+
+
+from .forms import CustomUserCreationForm
+
+def add_user(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(request)
+            # Redirect or display a success message
+            return redirect('catalyst:list-user')  # Redirect to the user list after successful registration
+    else:
+        form = CustomUserCreationForm()
+    
+    return render(request, 'account/add_user.html', {'form': form})
+
+
+
+class UserListView(ListView):
+    model = User
+    template_name = 'account/user_profile.html'
+    context_object_name = 'users'
+    
+    
+
+    
+def delete_user(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    if request.method == 'POST':
+        user.delete()
+    return redirect('catalyst:list-user')
+
+
+class UserHandlerView(TemplateView):
     template_name = 'account/user_profile.html'  # Path to your profile template
 
     def get_context_data(self, **kwargs):
@@ -42,7 +87,8 @@ class UserProfileView(LoginRequiredMixin, TemplateView):
         user = self.request.user
         context['user'] = user
         return context
-
+    
+    
 class BaseView(LoginRequiredMixin, TemplateView):
     template_name = 'account/base.html'  # Path to your profile template
 
@@ -205,3 +251,59 @@ class CompanyCountAPIView(APIView):
         
         return Response({'count': count})
 
+
+
+
+# class UserListView(APIView):
+#     def get(self, request):
+#         users = EmailAddress.objects.all()
+#         serializer = UserListSerializer(users, many=True)
+#         return Response(serializer.data)
+    
+        
+# class UserDetailView(APIView):
+#     def get(self, request, user_id):
+#         try:
+#             user = EmailAddress.objects.get(id=user_id)
+#             serializer = UserListSerializer(user)
+#             return Response(serializer.data)
+#         except EmailAddress.DoesNotExist:
+#             return Response(status=status.HTTP_404_NOT_FOUND)
+            
+#     def delete(self, request, user_id):
+#         try:
+#             user = EmailAddress.objects.get(id=user_id)
+#             user.delete()
+#             return Response(status=status.HTTP_204_NO_CONTENT)
+#         except EmailAddress.DoesNotExist:
+#             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+
+
+# from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from rest_framework import status
+# from rest_framework.authentication import TokenAuthentication
+# from rest_framework.permissions import IsAuthenticated
+# from allauth.account.models import EmailAddress
+# from .serializers import UserProfileSerializer  # Import the serializer
+
+
+
+# class UserProfileView(APIView):
+#     authentication_classes = [TokenAuthentication]
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request):
+#         user = request.user
+#         serializer = UserProfileSerializer(user)  # Serialize the user profile data
+#         return Response(serializer.data)  # Return a Response instance
+
+#     def put(self, request):
+#         user = request.user
+#         serializer = UserProfileSerializer(user, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)  # Return a Response instance
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # Return a Response instance

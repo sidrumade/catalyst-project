@@ -115,11 +115,21 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-LOGIN_REDIRECT_URL = 'user/profile'  # Replace with your profile view's URL name
+LOGIN_REDIRECT_URL = 'catalyst:home'  # Replace with your profile view's URL name
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 ACCOUNT_EMAIL_VERIFICATION = "none"
-ACCOUNT_SIGNUP_REDIRECT_URL = 'catalyst:user_profile'
+ACCOUNT_SIGNUP_REDIRECT_URL = 'catalyst:home'
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',  # Optional, for token-based authentication
+    ),
+    # ... other settings ...
+}
 
 
 # Internationalization
@@ -137,7 +147,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

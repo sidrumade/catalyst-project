@@ -1,6 +1,7 @@
 from django.db import models
 import datetime
 
+
 from django.utils import timezone
 
 # Create your models here.
@@ -36,5 +37,6 @@ class UploadLog(models.Model):
     total_rows = models.IntegerField(null=False)
     process_rows = models.IntegerField(null=False)
     status = models.CharField(max_length=50,default='In Progress')
+    
     
     
