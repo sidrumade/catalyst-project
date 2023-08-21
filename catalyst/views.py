@@ -157,10 +157,6 @@ class CompanyViewSet(viewsets.ModelViewSet):
         industries = Company.objects.values_list('industry', flat=True).distinct()
         return Response(industries)
 
-    @action(detail=False, methods=['get'])
-    def size_range_choices(self, request):
-        size_ranges = Company.objects.values_list('size_range', flat=True).distinct()
-        return Response(size_ranges)
 
     @action(detail=False, methods=['get'])
     def locality_choices(self, request):

@@ -8,7 +8,7 @@ from allauth.account.models import EmailAddress
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = ["name","industry", "size_range", "locality", "country"]
+        fields = ["name","industry", "locality", "country"]
 
 
 class CompanyCountSerializer(serializers.Serializer):
