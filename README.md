@@ -26,6 +26,7 @@ Next, you must allow the user to filter the data using a form. Once the user sub
 * Create super useer for login to access the file upload
 * Open cmd in "catalyst_count" folder
 * Start celery : celery -A catalyst_count worker -l info --pool=solo
+  (As of now i am using in memory task queue . Further it can be configured with Redis or RabbitMQ)
 * Start django application: python manage.py runserver
 
 ## Logics 
