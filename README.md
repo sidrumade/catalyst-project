@@ -20,12 +20,19 @@ Next, you must allow the user to filter the data using a form. Once the user sub
 
 ## Initial Preparation
 * Create python environment using Python 3.9.17
-* install requirement.txt : pip install -r requirement.txt
-* create .env file in "catalyst_count" folder with following fields :
-* DEBUG ,SECRET_KEY ,DB_NAME , DB_USER , DB_PASSWORD , DB_HOST, DB_PORT
-* run django migrations
+* Install requirement.txt : pip install -r requirement.txt
+* Create .env file in "catalyst_count" folder with following fields : DEBUG ,SECRET_KEY ,DB_NAME , DB_USER , DB_PASSWORD , DB_HOST, DB_PORT
+* Run django migrations
 * Create super useer for login to access the file upload
-* open cmd in "catalyst_count" folder
-* start celery : celery -A catalyst_count worker -l info --pool=solo
-* start django application: python manage.py runserver
+* Open cmd in "catalyst_count" folder
+* Start celery : celery -A catalyst_count worker -l info --pool=solo
+* Start django application: python manage.py runserver
+
+## Logics 
+* catalyst/models.py contains the database models.
+* catalyst/forms.py contains the forms for the user creation and query filter.
+* catalyst/serializer.py contains the logic for exchanging json data from models like : User Model and Company Model
+* catalyst/task.py contains the logic for cleaning the dataset and uploading the input file to the database. It does use the "celery" to do the task in asynchronous way. (Its very efficient to deal with large datasets.)
+* catalyst/urls.py contains the routing logic.
+* templates/account contains the html pages that are used in this project.
 
