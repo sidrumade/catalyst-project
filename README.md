@@ -12,9 +12,11 @@ Next, you must allow the user to filter the data using a form. Once the user sub
 ## Technology Used 
 * Python 3.9.17
 * Bootstrap - For the frontend pages
+* django-all-auth - For user authentication
 * Django REST API - For the file management
 * Django Celery - For handling large datasets ( > ~ 1GB )
 * Pandas for dataset operations
+* django-environ - For securing configuration and secrets
 
 ## Initial Preparation
 ### Create python environment using Python 3.9.17
