@@ -9,7 +9,14 @@ Next, you must allow the user to filter the data using a form. Once the user sub
 <br>
 <br>
 
-### Initial Preparation
+## Technology Used 
+* Python 3.9.17
+* Bootstrap - For the frontend pages
+* Django REST API - For the file management
+* Django Celery - For handling large datasets ( > ~ 1GB )
+* Pandas for dataset operations
+
+## Initial Preparation
 ### Create python environment using Python 3.9.17
 ### install requirement.txt : pip install -r requirement.txt
 ### create .env file in "catalyst_count" folder with following fields :
